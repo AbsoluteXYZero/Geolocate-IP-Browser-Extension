@@ -77,15 +77,21 @@ const APIS = [
     }
 ];
 
+const FETCH_TIMEOUT = 5000;
+
 async function fetchWithFallback(options = {}) {
     for (const api of APIS) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
         try {
-            const response = await fetch(api.url);
+            const response = await fetch(api.url, { signal: controller.signal });
+            clearTimeout(timer);
             if (!response.ok) continue;
             const data = await response.json();
             if (!data || (!data.ip && !data.ipAddress && !data.country && !data.country_code)) continue;
             return api.normalize(data);
         } catch (e) {
+            clearTimeout(timer);
             continue;
         }
     }
