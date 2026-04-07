@@ -1,8 +1,3 @@
-importScripts("js/constants.js");
-importScripts("js/utils/LocalStorageProvider.js");
-importScripts("js/models/GeoLocation.js");
-importScripts("js/main.js");
-
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method == "get") {
         chrome.storage.local.get(request.key, function (result) {
@@ -19,5 +14,5 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     } else if (request.method == "remove") {
         chrome.storage.local.remove(request.key, sendResponse);
     }
-    return true; // indicates we will send a response asynchronously
+    return true;
 });
