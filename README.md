@@ -6,20 +6,21 @@ The original extension intermittantly fails in Firefox seemingly because the dev
 
 ---
 
-## What changed from the original
-
 ### API — replaced private backend with public fallback chain
-The original relied entirely on Aykut's self-hosted servers. This fork replaces them with four well-known public geolocation APIs tried in order:
+The original relied entirely on Aykut's self-hosted servers. This fork replaces them with two well-known public geolocation APIs tried in order:
 
-1. [ipinfo.io](https://ipinfo.io)
-2. [ipapi.co](https://ipapi.co)
-3. [ipwho.is](https://ipwho.is)
-4. [freeipapi.com](https://freeipapi.com)
+1. [freeipapi.com](https://freeipapi.com) — primary
+2. [ipinfo.io](https://ipinfo.io) — fallback
 
-Each attempt has a 5 second timeout. If one fails or is unreachable, the next is tried automatically.
+### IP change detection
+- Checks your IP every 4 seconds via [api.ipify.org](https://api.ipify.org) — a lightweight service designed for high-volume checks
+- Hits the geo API only when your IP actually changes
+
+### In-browser notification banner
+When your IP changes, a floating banner appears in the top-right corner of your active tab showing the old and new IP. Fades out after 5 seconds.
 
 ### Toolbar tooltip
-Hovering the pinned extension icon now shows your current IP address instead of just the extension name.
+Hovering the pinned extension icon shows your current IP address instead of just the extension name.
 
 ### Firefox compatibility
 - Replaced `service_worker` background with a background page (`background.html`) since Firefox handles background scripts differently
@@ -27,9 +28,10 @@ Hovering the pinned extension icon now shows your current IP address instead of 
 - Removed `importScripts()` calls which are service worker-only APIs
 
 ### Cleanup
-- Removed link to Aykut's Android app from the popup (unrelated to this fork)
+- Removed IPv6 lookup — the replacement APIs don't have separate IPv6 endpoints so it was dead weight
+- Removed link to Aykut's Android app from the popup
 - Updated GitHub link in popup to point to this repository
-- Added `host_permissions` for all four API domains
+- Removed duplicate alarm listener from original code
 
 ---
 
